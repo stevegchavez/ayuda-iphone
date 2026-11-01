@@ -155,14 +155,15 @@ const tabs = (on) => {
   return `<div class="tabs">${t.map(x=>`<div id="${x[0]}" class="${on===x[0]?'on':''}"><span>${x[1]}</span>${x[2]}</div>`).join('')}</div>`;
 };
 const fld = (id,ph,mask) => `<div class="fld" id="${id}" ${mask?'data-mask="1"':''}><span class="val"></span><span class="ph2">${ph}</span></div>`;
-const homeGrid = () => `
+const homeGrid = (extra='') => `
  <div class="scr wall">${sb()}
   <div class="grid">
    ${ic('appPhotos','Fotos','🌸','#fff')}${ic('appCam','Cámara','📷','#8e8e93')}${ic('appFt','FaceTime','📹','#34C759')}${ic('appSet','Ajustes','⚙️','#8e8e93')}
    ${ic('appMaps','Mapas','🗺️','#4cd964')}${ic('appClock','Reloj','🕒','#111')}${ic('appNotes','Notas','📝','#FFD60A')}${ic('appMail','Correo','✉️','#0A84FF')}
   </div>
-  <div class="dock">${ic('appTel','Teléfono','📞','#34C759')}${ic('appWa','WhatsApp','💬','#25D366')}${ic('appSaf','Safari','🧭','#fff')}${ic('appMsg','Mensajes','🗨️','#34C759')}</div>
+  <div class="dock">${ic('appTel','Teléfono','📞','#34C759')}${ic('appWa','WhatsApp','💬','#25D366')}${ic('appSaf','Safari','🧭','#fff')}${ic('appMsg','Mensajes','💬','#34C759')}</div>${extra}
  </div>`;
+const pill = () => `<div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);background:#5E5CE6;color:#fff;border-radius:16px;padding:5px 16px;font-size:15px;font-weight:700;z-index:7">🖥️ Compartiendo pantalla</div>`;
 const callScreen = (sub) => `
  <div class="scr dark">${sb('')}<div class="callname">${H}</div><div class="callsub">${sub}</div>
   <div class="bottomrow"><div><div class="round" id="hangup" style="background:#FF3B30">📵</div><div class="lab">Colgar</div></div></div></div>`;
@@ -179,7 +180,7 @@ const settingsHead = (back,title) => `${sb('')}<div class="nav"><span>‹ ${back
 
 /* ---------- Pantallas de práctica (clave = screenId) ---------- */
 const SCREENS = {
-  home: homeGrid,
+  home: () => homeGrid(),
 
   /* Teléfono */
   tel_recents: () => `<div class="scr">${sb()}<div class="lt">Recientes</div><div class="lst">
@@ -256,13 +257,40 @@ const SCREENS = {
   ft_main: () => `<div class="scr">${sb()}<div class="lt">FaceTime</div><div class="lst">
      <div class="row" id="ftSteve"><div class="av" style="background:#0057D9">${H[0]}</div><div><b>${H}</b><br><small>toca para llamar</small></div><span class="sp"></span>📹</div>
      <div class="row"><div class="av">M</div>María<span class="sp"></span>📹</div></div></div>`,
-  ft_call: () => `<div class="scr dark">${sb('')}<div style="text-align:center;font-size:100px;margin-top:70px">🙂</div><div class="callname" style="margin-top:10px">${H}</div><div class="callsub">FaceTime</div>
-     <div class="bottomrow" style="bottom:60px"><div><div class="round" id="ftShare" style="background:#3a3a3c">🖥️</div><div class="lab">Compartir</div></div>
-     <div><div class="round" style="background:#FF3B30">📵</div><div class="lab">Colgar</div></div></div></div>`,
-  ft_share: () => `<div class="scr dark">${sb('')}<div style="text-align:center;font-size:100px;margin-top:70px">🙂</div><div class="callname" style="margin-top:10px">${H}</div><div class="callsub">FaceTime</div>
-     <div class="pop"><div class="row" id="ftShareScreen">🖥️ <b>Compartir mi pantalla</b></div><div class="row">🎬 Ver juntos</div></div>
-     <div class="bottomrow" style="bottom:60px"><div><div class="round" style="background:#3a3a3c">🖥️</div><div class="lab">Compartir</div></div>
-     <div><div class="round" style="background:#FF3B30">📵</div><div class="lab">Colgar</div></div></div></div>`,
+  ft_incall: (on) => `<div class="scr dark">${sb('')}
+     <div style="text-align:center;font-size:110px;margin-top:150px">🙂</div><div class="callname" style="margin-top:6px">${H}</div><div class="callsub">FaceTime</div>
+     <div style="position:absolute;right:14px;bottom:30px;width:84px;height:112px;border-radius:14px;background:#555;display:flex;align-items:center;justify-content:center;font-size:44px" aria-label="Tu imagen">🧑</div>
+     <div style="position:absolute;left:10px;right:10px;top:44px;background:rgba(60,60,67,.92);border-radius:20px;padding:12px 6px;display:flex;justify-content:space-around;align-items:flex-start;z-index:4">
+      <div style="text-align:center;width:76px"><div class="round" id="ftShareC" style="background:${on?'#0A84FF':'#5a5a5e'};width:56px;height:56px;margin:0 auto;font-size:26px;${on?'box-shadow:0 0 0 3px #fff':''}">🖥️👤</div><div class="lab" style="font-size:13px;margin-top:4px;line-height:1.1">Compartir contenido</div></div>
+      <div style="text-align:center;width:60px"><div class="round" style="background:#5a5a5e;width:56px;height:56px;margin:0 auto;font-size:26px">🎤</div><div class="lab" style="font-size:13px;margin-top:4px">Silenciar</div></div>
+      <div style="text-align:center;width:60px"><div class="round" style="background:#5a5a5e;width:56px;height:56px;margin:0 auto;font-size:26px">📷</div><div class="lab" style="font-size:13px;margin-top:4px">Cámara</div></div>
+      <div style="text-align:center;width:60px"><div class="round" id="ftHang" style="background:#FF3B30;width:56px;height:56px;margin:0 auto;font-size:26px">📵</div><div class="lab" style="font-size:13px;margin-top:4px">Colgar</div></div>
+     </div></div>`,
+  ft_incall_on: () => SCREENS.ft_incall(true),
+  ft_menu: () => SCREENS.ft_incall(false).replace(/<\/div>$/,'')+`<div class="sheet" style="bottom:150px;color:#000"><div class="row" id="ftShareScreen">🖥️ <b>Compartir mi pantalla</b></div><div class="row">🎬 Ver juntos</div></div></div>`,
+  ft_count: () => `<div class="scr dark">${sb('')}<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 24px">
+     <div style="font-size:150px;font-weight:800;line-height:1" id="ftCount">3</div><div style="font-size:24px;margin-top:20px">Tu pantalla se compartirá en…</div></div></div>`,
+  share_perm: () => homeGrid(`${pill()}
+     <div class="dlg" id="permDlg" style="z-index:6;top:230px;background:rgba(250,250,252,.98);color:#1c1c1e"><div class="t" style="color:#000;font-size:19px;font-weight:700">${H} quiere controlar tu iPhone</div>
+      <div style="text-align:center;font-size:15px;color:#1c1c1e;margin-bottom:10px">${H} podrá tocar y deslizar en tu pantalla. Puedes detenerlo cuando quieras.</div>
+      <div class="btns"><div id="permNo">No permitir</div><div class="go" id="permYes">Permitir</div></div></div>`),
+  share_ctrl: () => homeGrid(`${pill()}<div style="position:absolute;left:10px;right:10px;bottom:120px;background:#5E5CE6;color:#fff;border-radius:16px;padding:12px 14px;display:flex;align-items:center;gap:10px;z-index:4;font-size:17px;font-weight:700"><span style="flex:1">${H} está controlando tu iPhone</span><div id="ctrlStop" style="background:#FF3B30;border-radius:10px;padding:10px 14px">Detener</div></div>`),
+
+  /* Mensajes (iMessage) */
+  msg_list: () => `<div class="scr" style="background:#fff">${sb()}<div class="lt">Mensajes</div><div class="lst">
+     <div class="row" id="msgSteve"><div class="av" style="background:#0057D9">${H[0]}</div><div><b>${H}</b><br><small>Hola mamá, ¿cómo estás?</small></div></div>
+     <div class="row"><div class="av">M</div><div><b>María</b><br><small>Buenos días</small></div></div></div></div>`,
+  msg_chat: (extra='',field='<div class="tf" style="border:1px solid #c7c7cc">iMessage</div>') => `<div class="scr" style="background:#fff">${sb()}<div class="nav"><span>‹</span><b style="color:#000">${H}</b><span></span></div>
+     <div style="flex:1;padding:14px;background:#fff"><div class="b in" style="background:#e9e9eb">Hola mamá, ¿cómo estás?</div><div class="b out" style="background:#007AFF;color:#fff">¡Bien, mijo!</div></div>
+     <div class="wain" style="background:#fff"><div class="plus" id="msgPlus" style="background:#e9e9eb;color:#555">+</div>${field}</div>${extra}</div>`,
+  msg_menu: () => SCREENS.msg_chat(`<div class="sheet"><div class="row">📷 Cámara</div><div class="row" id="msgFotos">🖼️ <b>Fotos</b></div><div class="row">😀 Stickers</div><div class="row">📍 Ubicación</div></div>`),
+  msg_photos: () => `<div class="scr">${sb()}<div class="nav"><span>‹ Atrás</span><b style="color:#000">Fotos</b><span></span></div><div class="phg">
+     ${['🌸','🏖️','👶','🐶','🎂','🌅','🍎','🏠','⛪'].map((e,i)=>`<div class="ph" id="mp${i+1}" style="background:hsl(${i*40},70%,85%)">${e}</div>`).join('')}</div></div>`,
+  msg_ready: () => SCREENS.msg_chat('', `<div class="tf" style="border:1px solid #c7c7cc;display:flex;align-items:center;gap:10px"><span style="font-size:34px">🏖️</span><span style="flex:1"></span><div id="msgSend" role="button" aria-label="Enviar" style="width:40px;height:40px;border-radius:50%;background:#007AFF;color:#fff;font-size:24px;display:flex;align-items:center;justify-content:center;font-weight:800">↑</div></div>`),
+  msg_sent: () => `<div class="scr" style="background:#fff">${sb()}<div class="nav"><span>‹</span><b style="color:#000">${H}</b><span></span></div>
+     <div style="flex:1;padding:14px;background:#fff"><div class="b in" style="background:#e9e9eb">Hola mamá, ¿cómo estás?</div><div class="b out" style="background:#007AFF;color:#fff">¡Bien, mijo!</div>
+      <div class="b out" style="background:#007AFF;font-size:70px;padding:10px 18px" id="msgPhoto">🏖️</div><div style="text-align:right;color:#8e8e93;font-size:14px;margin-top:-4px" id="msgDeliv">Entregado</div></div>
+     <div class="wain" style="background:#fff"><div class="plus" style="background:#e9e9eb;color:#555">+</div><div class="tf" style="border:1px solid #c7c7cc">iMessage</div></div></div>`,
 
   /* Estafas */
   sms_scam: () => `<div class="scr" style="background:#fff">${sb()}<div class="nav"><span>‹ Mensajes</span><b style="color:#000">+1 555 013 2288</b><span></span></div>
@@ -299,6 +327,15 @@ const LESSONS = [
   {screen:'wa_photos', target:'#ph2', say:'Toca la foto que quieres enviar.'},
   {screen:'wa_preview', target:'#waSend', say:'Toca la flecha verde para enviar la foto.'}],
   done:`La foto ya llegó a ${H}.`},
+ {id:'mensajes-foto', emoji:'🖼️', title:'Enviar una foto por Mensajes', steps:[
+  {screen:'home', target:'#appMsg', say:'Toca la aplicación verde que dice Mensajes.'},
+  {screen:'msg_list', target:'#msgSteve', say:`Toca el nombre de ${H}.`},
+  {screen:'msg_chat', target:'#msgPlus', say:'Toca el botón + junto a donde se escribe.'},
+  {screen:'msg_menu', target:'#msgFotos', say:'Toca Fotos.'},
+  {screen:'msg_photos', target:'#mp2', say:'Toca la foto que quieres enviar.'},
+  {screen:'msg_ready', target:'#msgSend', say:'La foto ya está lista. Toca la flecha azul para enviarla.'},
+  {screen:'msg_sent', target:'#msgDeliv', type:'next', say:`¡Listo! Debajo dice Entregado cuando ${H} la recibe.`}],
+  done:`La foto ya llegó a ${H}.`},
  {id:'video', emoji:'🎥', title:'Videollamada por WhatsApp', steps:[
   {screen:'home', target:'#appWa', say:'Toca la aplicación verde que dice WhatsApp.'},
   {screen:'wa_list', target:'#waSteve', say:`Toca el chat de ${H}.`},
@@ -321,12 +358,18 @@ const LESSONS = [
   {screen:'saf_form', target:'#fTel', type:'input', placeholder:'Escribe tu teléfono', say:'Ahora toca el cuadro de Teléfono y escribe tu número. Luego toca Listo.'},
   {screen:'saf_form', target:'#fDir', type:'input', placeholder:'Escribe tu calle y ciudad', say:'Ahora toca el cuadro de Dirección y escribe tu calle y ciudad. Luego toca Listo.'},
   {screen:'saf_form', target:'#fSend', say:'Toca el botón azul que dice Enviar. Recuerda, esto es solo práctica.'}]},
- {id:'ayuda', emoji:'🤝', title:`Pedir ayuda a ${H} (compartir pantalla)`, steps:[
+ {id:'ayuda2', emoji:'🤝', title:`Compartir tu pantalla con ${H} (FaceTime)`, note:'Las palabras exactas pueden cambiar un poco según la versión de tu iPhone.', steps:[
   {screen:'home', target:'#appFt', say:'Toca la aplicación verde que dice FaceTime.'},
-  {screen:'ft_main', target:'#ftSteve', say:`Toca el nombre de ${H} para llamarlo.`},
-  {screen:'ft_call', target:'#ftShare', say:'Durante la llamada, toca el botón que dice Compartir.'},
-  {screen:'ft_share', target:'#ftShareScreen', say:'Toca Compartir mi pantalla.'}],
-  done:`Ahora ${H} puede ver tu pantalla y señalarte dónde tocar.`},
+  {screen:'ft_main', target:'#ftSteve', say:`Toca el nombre de ${H} para hacerle una videollamada.`},
+  {screen:'ft_incall', target:'#ftShareC', say:'Ya estás en la videollamada. Arriba, toca el botón que dice Compartir contenido.'},
+  {screen:'ft_menu', target:'#ftShareScreen', say:'Toca Compartir mi pantalla.'},
+  {screen:'ft_count', target:'#ftCount', type:'next', say:`Espera la cuenta 3, 2, 1. Después ${H} verá tu pantalla.`},
+  {screen:'share_perm', target:'#permYes', say:`${H} te pide permiso para ayudarte tocando tu pantalla. Si es ${H}, toca Permitir.`},
+  {screen:'share_perm', target:'#permDlg', type:'next', say:`Importante: solo permite esto con ${H} o alguien de tu familia en una llamada que TÚ hiciste. Si un desconocido te lo pide, toca No permitir y cuelga.`},
+  {screen:'share_ctrl', target:'#ctrlStop', say:`Cuando termine, toca Detener para que ${H} deje de controlar.`},
+  {screen:'ft_incall_on', target:'#ftShareC', say:'Para dejar de compartir tu pantalla, toca otra vez Compartir contenido.'},
+  {screen:'ft_incall_on', target:'#ftHang', say:'Para terminar la llamada, toca el botón rojo que dice Colgar.'}],
+  done:`¡Muy bien! Ya sabes pedir ayuda a ${H} compartiendo tu pantalla.`},
  {id:'estafas', emoji:'🚫', title:'Cuidado con estafas', steps:[
   {screen:'sms_scam', target:'#msg', type:'next', say:'Mira este mensaje de un número desconocido. Dice que tu paquete está retenido y que pagues. Es una trampa. Toca Siguiente.'},
   {screen:'sms_warn', target:'#warn', type:'next', say:'No toques enlaces de desconocidos. Toca Siguiente.'},
