@@ -48,6 +48,24 @@ h1{font-size:1.5rem;line-height:1.2;margin:20px 0 14px}
 .celebrate p{font-size:1.1rem}
 .celebrate button{margin-bottom:14px}
 
+.pill{display:inline-block;background:#D62B2B;color:#fff;border-radius:999px;font-size:.8rem;padding:2px 10px;margin-left:8px;vertical-align:middle}
+.sub{font-size:.85rem;color:#444;margin:6px 0}
+.tiny{min-height:64px;font-size:.9rem;font-weight:600;margin-top:10px}
+.pg p{font-size:1.05rem}
+.act{background:var(--soft);border:3px solid #C9D8F2;border-radius:16px;padding:12px;margin:0 0 12px}
+.act .nm{font-size:1.1rem;font-weight:700;margin-bottom:8px}
+.tg{display:flex;gap:8px}
+.tg button{min-height:64px;font-size:.8rem;padding:6px;background:#fff;color:var(--ink);border:3px solid #9bb3df}
+.tg button.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.tg button.fear.on{background:var(--red);border-color:var(--red)}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0}
+.chips button{width:auto;flex:1 1 45%;background:#fff;color:var(--blue);border:3px solid var(--blue)}
+textarea.big,input.big{width:100%;font:inherit;font-size:24px;min-height:120px;padding:10px 14px;border:3px solid var(--blue);border-radius:14px;margin:8px 0}
+input.big{min-height:64px}
+.req{background:var(--soft);border:3px solid #C9D8F2;border-radius:16px;padding:12px;margin:0 0 12px;font-size:1rem}
+.req small{display:block;color:#333;font-size:.85rem}
+.sumbox{white-space:pre-wrap;background:#FFF8E1;border:3px solid var(--ring);border-radius:16px;padding:14px;font-size:1rem;margin:10px 0}
+.msg{background:#FFF8E1;border:3px solid var(--ring);border-radius:14px;padding:12px;font-weight:700;margin:10px 0}
 /* stage + ring */
 .stage{position:relative;margin:0 auto;overflow:hidden;background:#000;border:6px solid #111;box-shadow:0 0 0 2px #888}
 .phone{position:absolute;left:0;top:0;width:390px;height:800px;transform-origin:0 0;overflow:hidden;background:#fff;color:#000;font-size:17px;line-height:1.25;user-select:none;-webkit-user-select:none}
@@ -226,6 +244,7 @@ const SCREENS = {
       <div class="row"><div class="ico" style="background:#34C759">📡</div>Datos móviles<span class="chev" style="margin-left:auto">›</span></div></div>
      <div class="box">
       <div class="row"><div class="ico" style="background:#8e8e93">🔔</div>Notificaciones<span class="chev" style="margin-left:auto">›</span></div>
+      <div class="row" id="rowST"><div class="ico" style="background:#5E5CE6">⏳</div>Tiempo en pantalla<span class="chev" style="margin-left:auto">›</span></div>
       <div class="row" id="rowDisplay"><div class="ico" style="background:#007AFF">☀️</div>Pantalla y brillo<span class="chev" style="margin-left:auto">›</span></div>
       <div class="row"><div class="ico" style="background:#007AFF">♿</div>Accesibilidad<span class="chev" style="margin-left:auto">›</span></div></div>
     </div></div>`,
@@ -244,6 +263,20 @@ const SCREENS = {
   set_wifipw: () => `<div class="scr" style="background:#F2F2F7">${settingsHead('Cancelar','Wi‑Fi')}
      <div class="dlg"><div class="t">Introduce la contraseña de “Casa”</div>${fld('pwField','Contraseña',true)}
       <div class="btns"><div>Cancelar</div><div class="go" id="btnJoin">Conectarse</div></div></div></div>`,
+
+  st_main: () => `<div class="scr" style="background:#F2F2F7">${settingsHead('Ajustes','Tiempo en pantalla')}<div class="grp">
+     <div class="box"><div class="row"><div class="ico" style="background:#5E5CE6">⏳</div><div>Este iPhone<br><small>Hoy: 3 h 12 min</small></div></div>
+      <div class="row" id="stAll"><b>Ver toda la actividad de apps y sitios web</b><span class="chev" style="margin-left:auto">›</span></div></div>
+     <div class="box"><div class="row">Tiempo de descanso<span class="chev" style="margin-left:auto">›</span></div></div></div></div>`,
+  st_chart: () => `<div class="scr" style="background:#F2F2F7">${sb('')}<div class="nav"><span>‹ Atrás</span><b style="color:#000">Actividad</b><span></span></div>
+     <div style="display:flex;margin:6px 16px;background:#e3e3e8;border-radius:10px;font-weight:700;text-align:center"><div style="flex:1;padding:8px;background:#fff;border-radius:10px;margin:2px">Semana</div><div style="flex:1;padding:8px">Día</div></div>
+     <div id="stChart" style="margin:8px 16px;background:#fff;border-radius:14px;padding:14px"><div style="font-size:15px;color:#555">PROMEDIO DIARIO</div><div style="font-size:30px;font-weight:800">3 h 12 min</div>
+      <div style="display:flex;align-items:flex-end;gap:8px;height:120px;margin-top:10px">${[50,70,40,90,60,100,30].map(h=>`<div style="flex:1;height:${h}%;background:#5E5CE6;border-radius:5px 5px 0 0"></div>`).join('')}</div>
+      <div style="display:flex;gap:8px;font-size:13px;color:#555;margin-top:4px">${['L','M','M','J','V','S','D'].map(d=>`<div style="flex:1;text-align:center">${d}</div>`).join('')}</div></div>
+     <div style="margin:0 32px;color:#6c6c70;font-size:14px">MÁS USADAS</div>
+     <div class="box" style="margin:0 16px;background:#fff;border-radius:12px;overflow:hidden">
+      <div class="row">💬 WhatsApp<span class="sp"></span><small>1 h 20 min</small></div><div class="row">🌸 Fotos<span class="sp"></span><small>45 min</small></div>
+      <div class="row">📞 Teléfono<span class="sp"></span><small>30 min</small></div><div class="row">▶️ YouTube<span class="sp"></span><small>25 min</small></div></div></div>`,
 
   /* Formulario en Safari */
   saf_form: () => `<div class="scr">${sb()}<div class="url">🔒 formulario-practica.com</div>
@@ -370,6 +403,13 @@ const LESSONS = [
   {screen:'ft_incall_on', target:'#ftShareC', say:'Para dejar de compartir tu pantalla, toca otra vez Compartir contenido.'},
   {screen:'ft_incall_on', target:'#ftHang', say:'Para terminar la llamada, toca el botón rojo que dice Colgar.'}],
   done:`¡Muy bien! Ya sabes pedir ayuda a ${H} compartiendo tu pantalla.`},
+ {id:'tiempo', emoji:'📊', title:`Muéstrale a ${H} tu Tiempo en pantalla`, added:'2026-10-31', note:'Las palabras pueden cambiar un poco según tu iPhone. Si dice "Activar Tiempo en pantalla", tócalo primero.', steps:[
+  {screen:'home', target:'#appSet', say:'Toca Ajustes, la aplicación gris con engranaje.'},
+  {screen:'set_main', target:'#rowST', say:'Toca Tiempo en pantalla.'},
+  {screen:'st_main', target:'#stAll', say:'Toca Ver toda la actividad de apps y sitios web.'},
+  {screen:'st_chart', target:'#stChart', type:'next', say:'Aquí ves qué apps usas y cuánto tiempo.'},
+  {screen:'st_chart', target:'#stChart', type:'next', say:`Cuando hables con ${H} por FaceTime, comparte tu pantalla y abre esta página para que él la vea.`}],
+  done:`¡Muy bien! Ya sabes enseñarle a ${H} tu Tiempo en pantalla.`},
  {id:'estafas', emoji:'🚫', title:'Cuidado con estafas', steps:[
   {screen:'sms_scam', target:'#msg', type:'next', say:'Mira este mensaje de un número desconocido. Dice que tu paquete está retenido y que pagues. Es una trampa. Toca Siguiente.'},
   {screen:'sms_warn', target:'#warn', type:'next', say:'No toques enlaces de desconocidos. Toca Siguiente.'},
@@ -420,10 +460,15 @@ function showHome(){
   cur = {lesson:null,i:0}; typed = {};
   try{ speechSynthesis.cancel(); }catch(e){}
   app.innerHTML = `<h1>¿Qué quieres aprender hoy?</h1>
-   <div id="list">${LESSONS.map(l=>`<button class="card" data-id="${l.id}"><span class="em">${l.emoji}</span><span class="t">${l.title}</span>${doneIds.includes(l.id)?'<span class="ck" aria-label="Completada">✅</span>':''}</button>`).join('')}</div>
+   <div id="list">${LESSONS.map(l=>`<button class="card" data-id="${l.id}"><span class="em">${l.emoji}</span><span class="t">${l.title}${isNew(l)?'<span class="pill">🆕 Nuevo</span>':''}</span>${doneIds.includes(l.id)?'<span class="ck" aria-label="Completada">✅</span>':''}</button>`).join('')}</div>
+   <button class="card" id="hReq"><span class="em">🙋</span><span class="t">Pedir una lección</span></button>
+   <button class="card" id="hChk"><span class="em">📋</span><span class="t">¿Qué haces con tu teléfono?</span></button>
+   <button class="card" id="hSum"><span class="em">📨</span><span class="t">Enviar mi resumen a ${H}</span></button>
    <div class="settings"><button class="alt" id="setVoice">Voz: ${prefs.voice?'Encendida':'Apagada'}</button>
-   <button class="alt" id="setBig">Letra: ${prefs.big?'Más grande':'Grande'}</button></div>`;
+   <button class="alt" id="setBig">Letra: ${prefs.big?'Más grande':'Grande'}</button>
+   <button class="alt tiny" id="hCfg">⚙️ Configurar (para ${H})</button></div>`;
   app.querySelectorAll('.card').forEach(b=>b.onclick=()=>startLesson(b.dataset.id));
+  $('#hReq').onclick=showRequest; $('#hChk').onclick=showCheckin; $('#hSum').onclick=showSummary; $('#hCfg').onclick=showConfig;
   $('#setVoice').onclick=()=>{ prefs.voice=!prefs.voice; store.set('ayuda.voice',prefs.voice); if(prefs.voice) speak('Voz encendida'); else try{speechSynthesis.cancel();}catch(e){} showHome(); };
   $('#setBig').onclick=()=>{ prefs.big=!prefs.big; store.set('ayuda.big',prefs.big); applyPrefs(); showHome(); };
   window.scrollTo(0,0);
@@ -431,6 +476,7 @@ function showHome(){
 
 function startLesson(id){
   cur = {lesson:LESSONS.find(l=>l.id===id), i:0}; typed = {};
+  markOpened(id); logEv('lesson_open');
   buildLessonShell();
   showStep(0);
 }
@@ -442,11 +488,11 @@ function buildLessonShell(){
    <div class="stage" id="stage"><div class="phone" id="phone"></div><div class="ring" id="ring"></div></div>
    <div class="bar"><button id="bRep">🔊 Repetir</button><button class="alt" id="bBack">Atrás</button></div>`;
   $('#bHome').onclick=leaveLesson;
-  $('#bRep').onclick=()=>speak(currentSay());
-  $('#bBack').onclick=()=>{ if(cur.i>0) showStep(cur.i-1); else leaveLesson(); };
+  $('#bRep').onclick=()=>{ logEv('repeat'); speak(currentSay()); };
+  $('#bBack').onclick=()=>{ if(cur.i>0){ logEv('back'); showStep(cur.i-1); } else leaveLesson(); };
   $('#stage').addEventListener('click', onStageTap);
 }
-function leaveLesson(){ typed = {}; showHome(); }
+function leaveLesson(){ if(cur.lesson) logEv('lesson_quit'); typed = {}; showHome(); }
 function currentStep(){ return cur.lesson.steps[cur.i]; }
 function currentSay(){ return currentStep().say; }
 
@@ -528,6 +574,7 @@ function onStageTap(e){
     if(st.type==='input'){ const inp=$('#realInput'); if(inp) inp.focus(); return; }
     showStep(cur.i+1);
   } else {
+    logEv('wrong_tap');
     const msg = 'Casi. Toca donde está el círculo amarillo.';
     $('#hint').textContent = msg;
     speak(msg);
@@ -537,7 +584,7 @@ function onStageTap(e){
 function celebrate(){
   const L = cur.lesson;
   if(!doneIds.includes(L.id)){ doneIds.push(L.id); store.set('ayuda.done',doneIds); }
-  typed = {};
+  typed = {}; logEv('lesson_done');
   app.innerHTML = `<div class="celebrate"><div style="font-size:4rem">🎉</div><div class="big">¡Muy bien! Lo lograste 🎉</div>
    <p>${L.done||''}</p>
    <button id="bAgain">Practicar otra vez</button><button class="alt" id="bHome2">Volver al inicio</button></div>`;
@@ -545,6 +592,158 @@ function celebrate(){
   $('#bHome2').onclick=showHome;
   window.scrollTo(0,0);
   speak('¡Muy bien! Lo lograste. ' + (L.done||''));
+}
+
+/* ---------- Registro local (solo en este teléfono) ---------- */
+const esc = t => String(t==null?'':t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function logEv(type){
+  try{
+    const log = store.get('ayuda.log', []); const a = Array.isArray(log)?log:[];
+    a.push({t:Date.now(), type, lesson:cur.lesson?cur.lesson.id:null, step:cur.lesson?cur.i+1:null});
+    store.set('ayuda.log', a.slice(-500));
+  }catch(e){}
+}
+function getLog(){ const l = store.get('ayuda.log', []); return Array.isArray(l)?l:[]; }
+function lessonById(id){ return LESSONS.find(l=>l.id===id); }
+function lname(id){ const l = lessonById(id); return l ? l.title : id; }
+function markOpened(id){ const o = store.get('ayuda.opened', []); const a = Array.isArray(o)?o:[]; if(!a.includes(id)){ a.push(id); store.set('ayuda.opened', a); } }
+function isNew(l){ if(!l.added) return false; const o = store.get('ayuda.opened', []); return !(Array.isArray(o) && o.includes(l.id)); }
+function summarizeLog(){
+  const log = getLog(), done = [], quit = {}, wrong = {}, rep = {};
+  log.forEach(e=>{
+    if(!lessonById(e.lesson)) return;
+    if(e.type==='lesson_done' && !done.includes(e.lesson)) done.push(e.lesson);
+    if(e.type==='lesson_quit') quit[e.lesson] = e.step;
+    if(e.type==='wrong_tap'){ const k = e.lesson+'|'+e.step; wrong[k] = (wrong[k]||0)+1; }
+    if(e.type==='repeat') rep[e.lesson] = (rep[e.lesson]||0)+1;
+  });
+  doneIds.forEach(id=>{ if(lessonById(id) && !done.includes(id)) done.push(id); });
+  const quits = Object.keys(quit).filter(id=>!done.includes(id)).map(id=>({id, step:quit[id]}));
+  const top = (o,n)=>Object.entries(o).sort((a,b)=>b[1]-a[1]).slice(0,n);
+  return {done, quits,
+    hard: top(wrong,3).map(([k,c])=>{ const [id,st]=k.split('|'); return {id, step:+st, n:c}; }),
+    repeated: top(rep,3).map(([id,c])=>({id, n:c}))};
+}
+
+/* ---------- Teléfono y envío (sms) ---------- */
+function getPhone(){ const v = store.get('ayuda.phone', ''); return typeof v==='string' ? v.replace(/[^0-9+]/g,'') : ''; }
+function deliver(text, noticeEl){
+  const ph = getPhone();
+  if(ph){ location.href = `sms:${ph}&body=${encodeURIComponent(text)}`; return; }
+  noticeEl.innerHTML = `<div class="msg">Pídele a ${H} que configure su número en ⚙️</div>` + (navigator.share?'<button id="bShare">Compartir</button>':'');
+  const b = noticeEl.querySelector('#bShare');
+  if(b) b.onclick=()=>{ try{ navigator.share({text}).catch(()=>{}); }catch(e){} };
+}
+function pageTop(title){
+  app.innerHTML = `<div class="top"><button class="alt" id="bHome">← Inicio</button></div><div class="pg"><h1>${title}</h1><div id="body"></div></div>`;
+  $('#bHome').onclick=showHome; window.scrollTo(0,0);
+}
+
+/* ---------- ¿Qué haces con tu teléfono? ---------- */
+const ACTS = [['📞','Llamadas'],['💬','Mensajes'],['🟢','WhatsApp'],['🖼️','Fotos y videos'],['📹','Videollamadas'],['🎙️','Mandar audios'],['✉️','Correo'],['🗺️','Mapas'],['📅','Calendario y recordatorios'],['▶️','YouTube'],['🏦','Banco o pagar cuentas'],['🩺','Citas con el doctor'],['🚗','Pedir un carro (Uber/Lyft)'],['🔦','Linterna y alarma']];
+const STATES = [['use','Ya lo uso'],['learn','Quiero aprender'],['fear','Me da miedo']];
+function getCheckin(){ const c = store.get('ayuda.checkin', {}); return (c && typeof c==='object' && !Array.isArray(c)) ? c : {}; }
+function showCheckin(){
+  pageTop('📋 ¿Qué haces con tu teléfono?');
+  const c = getCheckin();
+  $('#body').innerHTML = `<p>Marca lo que ya usas, lo que quieres aprender y lo que te da miedo. No hay respuestas malas.</p>
+   ${ACTS.map((a,i)=>`<div class="act"><div class="nm">${a[0]} ${a[1]}</div><div class="tg" data-i="${i}">${STATES.map(s=>`<button class="${s[0]}${c['a'+i]===s[0]?' on':''}" data-s="${s[0]}" aria-pressed="${c['a'+i]===s[0]}">${s[1]}</button>`).join('')}</div></div>`).join('')}
+   <div class="act"><div class="nm">✏️ Otra cosa…</div><input class="big" id="cOther" type="text" placeholder="Escribe aquí" value="${esc(c.other||'')}" autocomplete="off"></div>
+   <p class="msg" id="saved" aria-live="polite" style="display:none">Guardado ✓</p><button id="cDone">Listo</button>`;
+  const flash = ()=>{ const m=$('#saved'); m.style.display='block'; };
+  document.querySelectorAll('.tg').forEach(g=>g.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    const k='a'+g.dataset.i, cc=getCheckin();
+    if(cc[k]===b.dataset.s) delete cc[k]; else cc[k]=b.dataset.s;
+    store.set('ayuda.checkin', cc);
+    g.querySelectorAll('button').forEach(x=>{ const on = cc[k]===x.dataset.s; x.classList.toggle('on', on); x.setAttribute('aria-pressed', on); });
+    flash();
+  }));
+  $('#cOther').addEventListener('input', e=>{ const cc=getCheckin(); cc.other=e.target.value; store.set('ayuda.checkin', cc); flash(); });
+  $('#cDone').onclick=showHome;
+}
+
+/* ---------- Pedir una lección ---------- */
+const CODE_CHARS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+function newCode(){ let c=''; for(let i=0;i<4;i++) c += CODE_CHARS[Math.floor(Math.random()*CODE_CHARS.length)]; return 'P-'+c; }
+function getReqs(){
+  const r = store.get('ayuda.reqs', []); const a = Array.isArray(r)?r:[]; let ch=false;
+  a.forEach(q=>{ if(q.status!=='done'){ const L = LESSONS.find(l=>Array.isArray(l.answers) && l.answers.includes(q.code)); if(L){ q.status='done'; q.lesson=L.id; ch=true; } } });
+  if(ch) store.set('ayuda.reqs', a);
+  return a;
+}
+const CHIPS = ['Pagar una cuenta','Usar el mapa','Mandar un audio','Mi cita con el doctor','Borrar fotos','Otra cosa…'];
+function showRequest(){
+  pageTop('🙋 ¿Con qué necesitas ayuda?');
+  $('#body').innerHTML = `<div class="chips">${CHIPS.map(t=>`<button data-t="${esc(t)}">${t}</button>`).join('')}</div>
+   <textarea class="big" id="rTxt" aria-label="Escribe lo que necesitas"></textarea>
+   <p class="sub">Escribe o toca el 🎤 del teclado para hablar.</p>
+   <button class="green" id="rGo" disabled>Pedir</button><div id="rNote"></div>
+   <h1>Mis pedidos</h1><div id="rList"></div>`;
+  const tx = $('#rTxt'), go = $('#rGo');
+  const upd = ()=>{ go.disabled = !tx.value.trim(); };
+  tx.addEventListener('input', upd);
+  document.querySelectorAll('.chips button').forEach(b=>b.onclick=()=>{ const t=b.dataset.t; tx.value = t==='Otra cosa…' ? '' : t; upd(); tx.focus(); });
+  go.onclick=()=>{
+    const text = tx.value.trim(); if(!text) return;
+    const reqs = getReqs(); let code; do{ code=newCode(); }while(reqs.some(q=>q.code===code));
+    reqs.push({code, text, date:new Date().toISOString().slice(0,10), status:'enviado'});
+    store.set('ayuda.reqs', reqs);
+    tx.value=''; upd(); renderReqs();
+    deliver(`📌 Pedido de lección ${code}: ${text}`, $('#rNote'));
+  };
+  renderReqs();
+}
+function renderReqs(){
+  const reqs = getReqs().slice().reverse(), box = $('#rList');
+  if(!reqs.length){ box.innerHTML = '<p class="sub">Todavía no has pedido nada.</p>'; return; }
+  box.innerHTML = reqs.map(q=>`<div class="req"><b>${esc(q.text)}</b><small>${esc(q.date)} · ${q.status==='done'?'✅ ¡Ya está tu lección!':'Enviado a '+H}</small>${q.status==='done'&&q.lesson&&lessonById(q.lesson)?`<button class="green" data-l="${esc(q.lesson)}" style="margin-top:8px">Abrir lección</button>`:''}</div>`).join('');
+  box.querySelectorAll('button[data-l]').forEach(b=>b.onclick=()=>startLesson(b.dataset.l));
+}
+
+/* ---------- Resumen para el ayudante ---------- */
+function buildSummary(){
+  const sm = summarizeLog(), c = getCheckin(), L = [];
+  L.push(`Resumen de Ayuda iPhone (${new Date().toLocaleDateString('es')})`);
+  L.push('Terminadas: ' + (sm.done.length ? sm.done.map(lname).join(', ') : 'ninguna'));
+  if(sm.quits.length) L.push('Sin terminar: ' + sm.quits.map(q=>`${lname(q.id)} (se detuvo en el paso ${q.step})`).join('; '));
+  if(sm.hard.length) L.push('Pasos difíciles: ' + sm.hard.map(h=>`${lname(h.id)} paso ${h.step} (${h.n})`).join('; '));
+  if(sm.repeated.length) L.push('Repite mucho: ' + sm.repeated.map(r=>lname(r.id)).join(', '));
+  const by = k => ACTS.filter((a,i)=>c['a'+i]===k).map(a=>a[1]).join(', ');
+  if(by('learn')) L.push('Quiere aprender: ' + by('learn'));
+  if(by('fear')) L.push('Le da miedo: ' + by('fear'));
+  if(by('use')) L.push('Ya usa: ' + by('use'));
+  if(c.other && c.other.trim()) L.push('Otra cosa: ' + c.other.trim());
+  const open = getReqs().filter(q=>q.status!=='done');
+  if(open.length) L.push('Pedidos abiertos: ' + open.map(q=>`${q.code} ${q.text}`).join('; '));
+  let t = L.join('\n'); if(t.length>900) t = t.slice(0,897)+'…';
+  return t;
+}
+function showSummary(){
+  pageTop(`📨 Enviar mi resumen a ${H}`);
+  const text = buildSummary();
+  $('#body').innerHTML = `<p>Esto es lo que se va a enviar:</p><div class="sumbox">${esc(text)}</div>
+   <p class="sub">Esto se guarda solo en tu teléfono. Tú decides si se lo envías a ${H}.</p>
+   <button class="green" id="sGo">Enviar</button><div id="sNote"></div>
+   <button class="alt" id="sBack" style="margin-top:12px">Volver</button>
+   <button class="alt tiny" id="sDel">Borrar mi historial</button><div id="sConf"></div>`;
+  $('#sGo').onclick=()=>deliver(text, $('#sNote'));
+  $('#sBack').onclick=showHome;
+  $('#sDel').onclick=()=>{
+    $('#sConf').innerHTML = '<div class="msg">¿Seguro?</div><button id="sYes" style="background:#D62B2B">Sí, borrar</button><button class="alt" id="sNo" style="margin-top:10px">No</button>';
+    $('#sYes').onclick=()=>{ store.set('ayuda.log', []); showSummary(); };
+    $('#sNo').onclick=()=>{ $('#sConf').innerHTML=''; };
+  };
+}
+
+/* ---------- Configurar (para el ayudante) ---------- */
+function showConfig(){
+  pageTop(`⚙️ Configurar (para ${H})`);
+  const ph = getPhone(), masked = ph ? '••••' + ph.slice(-4) : 'ninguno';
+  $('#body').innerHTML = `<p>Número de teléfono de ${H}: <b>${esc(masked)}</b></p>
+   <input class="big" id="cPhone" type="tel" inputmode="tel" placeholder="Número de teléfono" autocomplete="off" aria-label="Número de teléfono">
+   <button id="cSave">Guardar</button><div id="cNote" class="sub" aria-live="polite"></div>
+   <p class="sub">Este número solo se guarda en este teléfono. Nunca sale de aquí, excepto dentro de los mensajes que ella misma envía.<br>This number is stored only on this phone. It never leaves it except inside messages she sends herself.</p>`;
+  $('#cSave').onclick=()=>{ store.set('ayuda.phone', $('#cPhone').value); showConfig(); };
 }
 
 /* ---------- Inicio ---------- */

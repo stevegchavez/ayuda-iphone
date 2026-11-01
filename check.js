@@ -8,5 +8,6 @@ const out=vm.runInContext(`(()=>{let bad=[],n=0;for(const l of LESSONS)for(const
  if(!SCREENS[s.screen]){bad.push(l.id+'#'+(i+1)+' missing screen '+s.screen);continue}
  const h=SCREENS[s.screen](), id=s.target.slice(1);
  if(!h.includes('id="'+id+'"'))bad.push(l.id+'#'+(i+1)+' missing '+s.target+' in '+s.screen)}
+ const ids=new Set();for(const l of LESSONS){if(ids.has(l.id))bad.push('duplicate id '+l.id);ids.add(l.id);for(const a of (l.answers||[]))if(!/^P-[A-Z2-9]{4}$/.test(a))bad.push(l.id+' bad answer code '+a)}
  return {lessons:LESSONS.length,steps:n,bad}})()`,ctx);
 console.log(JSON.stringify(out));process.exit(out.bad.length?1:0);
