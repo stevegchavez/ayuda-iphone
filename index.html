@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ayuda iPhone</title>
+<meta name="theme-color" content="#0057D9">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Ayuda">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<style>
+:root{--blue:#0057D9;--ink:#111;--bg:#fff;--soft:#EEF3FB;--green:#1B8A3A;--red:#D62B2B;--ring:#FFB300}
+html{font-size:22px;-webkit-text-size-adjust:100%}
+html[data-big="1"]{font-size:26px}
+*{box-sizing:border-box}
+body{margin:0;background:#E7ECF4;color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;line-height:1.35;
+ padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)}
+#app{max-width:480px;margin:0 auto;min-height:100vh;background:var(--bg);padding:0 16px 24px;position:relative}
+button{font:inherit;font-weight:700;min-height:64px;border:0;border-radius:16px;padding:12px 18px;cursor:pointer;background:var(--blue);color:#fff;width:100%;touch-action:manipulation}
+button.alt{background:#fff;color:var(--blue);border:3px solid var(--blue)}
+button.green{background:var(--green)}
+button:disabled{opacity:.45}
+button:focus-visible,input:focus-visible{outline:4px solid var(--ring);outline-offset:2px}
+h1{font-size:1.5rem;line-height:1.2;margin:20px 0 14px}
+.card{display:flex;align-items:center;gap:14px;text-align:left;background:var(--soft);color:var(--ink);border:3px solid #C9D8F2;margin:0 0 14px;min-height:84px;font-size:1.05rem}
+.card .em{font-size:2.2rem}
+.card .t{flex:1}
+.card .ck{color:var(--green);font-size:1.8rem}
+.settings{display:flex;flex-direction:column;gap:12px;margin:26px 0 8px;padding-top:18px;border-top:2px solid #ddd}
+.settings button{font-weight:600}
+.top{position:sticky;top:0;z-index:20;background:var(--bg);display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:2px solid #e3e3e3}
+.top button{width:auto;min-width:140px}
+.top .step{font-size:1.05rem;font-weight:700}
+.instr{background:#FFF8E1;border:3px solid var(--ring);border-radius:18px;padding:16px;margin:14px 0}
+.instr .say{font-size:1.3rem;font-weight:700;margin:0}
+.instr .note{font-size:1rem;margin:10px 0 0;color:#333}
+.instr input{width:100%;font-size:24px;min-height:64px;padding:10px 14px;border:3px solid var(--blue);border-radius:14px;margin-top:12px}
+.instr .go{margin-top:12px}
+.hint{min-height:1.6em;font-size:1.05rem;font-weight:700;color:#8a4b00;margin:0 0 8px}
+.bar{display:flex;gap:12px;margin-top:14px}
+.bar button{flex:1}
+.celebrate{text-align:center;padding:24px 0}
+.celebrate .big{font-size:1.7rem;font-weight:800;margin:16px 0}
+.celebrate p{font-size:1.1rem}
+.celebrate button{margin-bottom:14px}
+
+/* stage + ring */
+.stage{position:relative;margin:0 auto;overflow:hidden;background:#000;border:6px solid #111;box-shadow:0 0 0 2px #888}
+.phone{position:absolute;left:0;top:0;width:390px;height:800px;transform-origin:0 0;overflow:hidden;background:#fff;color:#000;font-size:17px;line-height:1.25;user-select:none;-webkit-user-select:none}
+.ring{position:absolute;display:none;border:6px solid var(--ring);border-radius:18px;box-shadow:0 0 0 9999px rgba(0,0,0,.45);pointer-events:none;z-index:50}
+.ring::after{content:"";position:absolute;inset:-12px;border:5px solid #FF8A00;border-radius:26px;animation:pulse 1.2s ease-out infinite}
+@keyframes pulse{0%{transform:scale(.96);opacity:1}100%{transform:scale(1.12);opacity:0}}
+@media (prefers-reduced-motion:reduce){.ring::after{animation:none;opacity:.8}*{scroll-behavior:auto!important}}
+
+/* mock iOS */
+.phone *{box-sizing:border-box}
+.sb{height:46px;padding:14px 28px 0;display:flex;justify-content:space-between;font-weight:700;font-size:16px}
+.dark{background:#1c1c1e;color:#fff}
+.wall{background:linear-gradient(160deg,#5b8def,#a46be0 55%,#f0907a);color:#fff}
+.scr{position:absolute;inset:0;display:flex;flex-direction:column}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px 6px;padding:24px 16px}
+.ai{text-align:center;font-size:12px;color:#fff;font-weight:600}
+.aib{width:62px;height:62px;border-radius:15px;margin:0 auto 5px;display:flex;align-items:center;justify-content:center;font-size:32px}
+.dock{position:absolute;left:12px;right:12px;bottom:22px;background:rgba(255,255,255,.3);border-radius:32px;padding:14px 10px 10px;display:grid;grid-template-columns:repeat(4,1fr)}
+.nav{padding:4px 16px 8px;display:flex;justify-content:space-between;align-items:center;color:#007AFF;font-size:17px}
+.lt{font-size:32px;font-weight:800;padding:0 16px 8px;color:#000}
+.lst{background:#fff;flex:1;overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;padding:13px 16px;border-bottom:1px solid #e5e5ea;font-size:18px;background:#fff}
+.row .sp{flex:1}
+.row .chev{color:#c7c7cc;font-size:22px}
+.grp{background:#F2F2F7;flex:1;padding:0}
+.grp .box{background:#fff;margin:14px 16px;border-radius:12px;overflow:hidden}
+.grp .box .row{background:#fff}
+.grp .box .row:last-child{border-bottom:0}
+.ico{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:17px;color:#fff}
+.tabs{display:grid;grid-template-columns:repeat(5,1fr);border-top:1px solid #d0d0d5;background:#f8f8f8;padding:6px 0 26px;text-align:center;font-size:11px;color:#8e8e93}
+.tabs div{padding:4px 0}
+.tabs .on{color:#007AFF;font-weight:700}
+.tabs span{display:block;font-size:22px}
+.av{width:42px;height:42px;border-radius:50%;background:#c7c7cc;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:19px}
+.big-av{width:96px;height:96px;font-size:44px;margin:20px auto 10px;background:#8e8e93}
+.cbtns{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;padding:10px 16px}
+.cb{background:#f2f2f7;border-radius:12px;text-align:center;padding:12px 2px;font-size:13px;color:#007AFF;font-weight:600}
+.cb span{display:block;font-size:26px}
+.callname{text-align:center;font-size:34px;font-weight:600;margin-top:60px}
+.callsub{text-align:center;font-size:18px;opacity:.7;margin-top:6px}
+.round{width:76px;height:76px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:34px;margin:0 auto 6px}
+.lab{text-align:center;font-size:14px}
+.bottomrow{position:absolute;left:0;right:0;bottom:70px;display:flex;justify-content:space-around;padding:0 24px}
+.slider{position:absolute;left:24px;right:24px;bottom:70px;height:76px;border-radius:38px;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:19px}
+.slider .h{position:absolute;left:4px;top:4px;width:68px;height:68px;border-radius:50%;background:#34C759;display:flex;align-items:center;justify-content:center;font-size:32px}
+.wah{background:#075E54;color:#fff;padding:0 14px 10px;display:flex;align-items:center;gap:10px;font-size:20px;font-weight:700}
+.wah .sp{flex:1}
+.wah .vid{background:rgba(255,255,255,.18);border-radius:12px;padding:6px 10px;font-size:14px;text-align:center;font-weight:600}
+.wah .vid span{display:block;font-size:22px}
+.chat{flex:1;background:#ECE5DD;padding:14px}
+.b{max-width:75%;padding:9px 12px;border-radius:12px;margin-bottom:10px;font-size:17px}
+.b.in{background:#fff}
+.b.out{background:#DCF8C6;margin-left:auto}
+.wain{position:absolute;left:0;right:0;bottom:0;background:#f0f0f0;padding:10px 10px 28px;display:flex;align-items:center;gap:10px}
+.plus{width:48px;height:48px;border-radius:50%;background:#fff;color:#007AFF;font-size:34px;display:flex;align-items:center;justify-content:center;font-weight:400}
+.tf{flex:1;background:#fff;border-radius:22px;padding:11px 14px;color:#999;font-size:17px}
+.sheet{position:absolute;left:10px;right:10px;bottom:20px;background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 0 30px rgba(0,0,0,.3);z-index:5}
+.sheet .row{font-size:19px}
+.phg{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;padding:3px;background:#fff;flex:1;align-content:start}
+.ph{height:118px;display:flex;align-items:center;justify-content:center;font-size:52px}
+.sendbtn{position:absolute;right:22px;bottom:34px;text-align:center;color:#fff;font-size:14px;font-weight:700}
+.sendbtn .round{background:#25D366;width:68px;height:68px;font-size:30px;color:#fff}
+.tr{display:flex;align-items:center;gap:12px;font-size:19px}
+.sw{width:52px;height:32px;border-radius:16px;background:#34C759;position:relative;margin-left:auto}
+.sw::after{content:"";position:absolute;right:3px;top:3px;width:26px;height:26px;border-radius:50%;background:#fff}
+.sl{margin:22px 16px;background:#fff;border-radius:12px;padding:18px 16px}
+.sl .track{position:relative;height:6px;border-radius:3px;background:#d1d1d6;margin:22px 44px}
+.sl .fill{position:absolute;left:0;top:0;bottom:0;width:35%;background:#007AFF;border-radius:3px}
+.sl .knob{position:absolute;left:35%;top:-11px;width:28px;height:28px;margin-left:-14px;border-radius:50%;background:#fff;box-shadow:0 1px 6px rgba(0,0,0,.4)}
+.sl .a1,.sl .a2{position:absolute;top:-16px;font-weight:700}
+.sl .a1{left:-34px;font-size:15px}
+.sl .a2{right:-38px;font-size:30px;padding:4px 6px}
+.fld{background:#fff;border:2px solid #c7c7cc;border-radius:10px;padding:12px;font-size:19px;min-height:50px;margin:4px 0 14px}
+.fld .ph2{color:#999}
+.lbl{font-weight:700;font-size:16px;margin-top:6px}
+.url{margin:0 14px 10px;background:#e9e9ee;border-radius:12px;padding:10px;text-align:center;font-size:16px}
+.fbtn{background:#007AFF;color:#fff;text-align:center;border-radius:12px;padding:15px;font-size:20px;font-weight:700;margin-top:8px}
+.note2{background:#E8F7EC;color:#14602a;border-radius:10px;padding:10px;font-size:14px;font-weight:600;margin:0 0 10px}
+.dlg{position:absolute;left:30px;right:30px;top:200px;background:#f2f2f2;border-radius:16px;padding:20px 16px;box-shadow:0 0 40px rgba(0,0,0,.4)}
+.dlg .t{text-align:center;font-weight:700;font-size:19px;margin-bottom:12px}
+.dlg .btns{display:flex;gap:10px;margin-top:6px}
+.dlg .btns div{flex:1;text-align:center;padding:13px;border-radius:10px;background:#fff;color:#007AFF;font-size:18px;font-weight:600}
+.dlg .btns div.go{background:#007AFF;color:#fff}
+.pop{position:absolute;right:14px;bottom:130px;width:250px;background:#fff;color:#000;border-radius:16px;overflow:hidden;z-index:5}
+.pop .row{font-size:17px}
+.warn{display:inline-block;background:#D62B2B;color:#fff;font-weight:800;font-size:22px;border-radius:10px;padding:8px 14px;margin-top:10px}
+.link{color:#007AFF;text-decoration:underline;word-break:break-all}
+.confirm{position:absolute;left:12px;right:12px;bottom:24px;display:flex;flex-direction:column;gap:8px}
+.confirm div{background:#fff;border-radius:14px;text-align:center;padding:16px;font-size:20px;color:#007AFF}
+.confirm .rd{color:#D62B2B;font-weight:600}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+'use strict';
+const HELPER_NAME = 'Steve';
+
+/* ---------- Pequeños ayudantes para dibujar pantallas ---------- */
+const H = HELPER_NAME;
+const sb = (cls='') => `<div class="sb ${cls}"><span>9:41</span><span>📶 🔋</span></div>`;
+const ic = (id,label,em,bg) => `<div class="ai" id="${id}"><div class="aib" style="background:${bg}">${em}</div>${label}</div>`;
+const tabs = (on) => {
+  const t = [['tabFav','⭐','Favoritos'],['tabRec','🕘','Recientes'],['tabCon','👤','Contactos'],['tabKey','⌨️','Teclado'],['tabVm','📼','Buzón']];
+  return `<div class="tabs">${t.map(x=>`<div id="${x[0]}" class="${on===x[0]?'on':''}"><span>${x[1]}</span>${x[2]}</div>`).join('')}</div>`;
+};
+const fld = (id,ph,mask) => `<div class="fld" id="${id}" ${mask?'data-mask="1"':''}><span class="val"></span><span class="ph2">${ph}</span></div>`;
+const homeGrid = () => `
+ <div class="scr wall">${sb()}
+  <div class="grid">
+   ${ic('appPhotos','Fotos','🌸','#fff')}${ic('appCam','Cámara','📷','#8e8e93')}${ic('appFt','FaceTime','📹','#34C759')}${ic('appSet','Ajustes','⚙️','#8e8e93')}
+   ${ic('appMaps','Mapas','🗺️','#4cd964')}${ic('appClock','Reloj','🕒','#111')}${ic('appNotes','Notas','📝','#FFD60A')}${ic('appMail','Correo','✉️','#0A84FF')}
+  </div>
+  <div class="dock">${ic('appTel','Teléfono','📞','#34C759')}${ic('appWa','WhatsApp','💬','#25D366')}${ic('appSaf','Safari','🧭','#fff')}${ic('appMsg','Mensajes','🗨️','#34C759')}</div>
+ </div>`;
+const callScreen = (sub) => `
+ <div class="scr dark">${sb('')}<div class="callname">${H}</div><div class="callsub">${sub}</div>
+  <div class="bottomrow"><div><div class="round" id="hangup" style="background:#FF3B30">📵</div><div class="lab">Colgar</div></div></div></div>`;
+const waHeader = () => `<div class="scr">${sb('')}`;
+const waChat = (extra='') => `
+ <div class="scr" style="background:#075E54">
+  <div style="background:#075E54;color:#fff">${sb('')}</div>
+  <div class="wah"><span>‹</span><div class="av" style="background:#128C7E">S</div><span class="sp">${H}</span>
+   <div class="vid" id="waVideo"><span>🎥</span>Video</div><div class="vid"><span>📞</span>Llamar</div></div>
+  <div class="chat"><div class="b in">Hola mamá, ¿cómo estás?</div><div class="b out">¡Bien, mijo!</div></div>
+  <div class="wain"><div class="plus" id="waPlus">+</div><div class="tf">Mensaje</div><div>🎤</div></div>${extra}
+ </div>`;
+const settingsHead = (back,title) => `${sb('')}<div class="nav"><span>‹ ${back}</span></div><div class="lt">${title}</div>`;
+
+/* ---------- Pantallas de práctica (clave = screenId) ---------- */
+const SCREENS = {
+  home: homeGrid,
+
+  /* Teléfono */
+  tel_recents: () => `<div class="scr">${sb()}<div class="lt">Recientes</div><div class="lst">
+     <div class="row"><div class="av">M</div>María<span class="sp"></span><small>ayer</small></div>
+     <div class="row"><div class="av">T</div>Tía Rosa<span class="sp"></span><small>lunes</small></div></div>${tabs('tabRec')}</div>`,
+  tel_contacts: () => `<div class="scr">${sb()}<div class="lt">Contactos</div><div class="lst">
+     <div class="row"><div class="av">A</div>Ana</div>
+     <div class="row"><div class="av">C</div>Carlos</div>
+     <div class="row" id="ctSteve"><div class="av" style="background:#0057D9">${H[0]}</div><b>${H}</b></div>
+     <div class="row"><div class="av">T</div>Teresa</div></div>${tabs('tabCon')}</div>`,
+  tel_card: () => `<div class="scr">${sb()}<div class="nav"><span>‹ Contactos</span></div>
+     <div class="av big-av">${H[0]}</div><div style="text-align:center;font-size:30px;font-weight:700">${H}</div>
+     <div class="cbtns"><div class="cb"><span>💬</span>mensaje</div><div class="cb" id="btnCall"><span>📞</span>llamar</div><div class="cb"><span>📹</span>video</div><div class="cb"><span>✉️</span>correo</div></div></div>`,
+  call_active: () => callScreen('llamando…'),
+
+  /* Llamada entrante */
+  incoming: () => `<div class="scr dark">${sb('')}<div class="callname">${H}</div><div class="callsub">llamando…</div>
+     <div class="bottomrow"><div><div class="round" style="background:#FF3B30">✖</div><div class="lab">Rechazar</div></div>
+     <div><div class="round" id="accept" style="background:#34C759">📞</div><div class="lab">Aceptar</div></div></div></div>`,
+  incoming_locked: () => `<div class="scr dark">${sb('')}<div class="callname">${H}</div><div class="callsub">llamando…</div>
+     <div class="slider"><div class="h" id="handle">📞</div><span style="margin-left:56px">desliza para contestar</span></div></div>`,
+
+  /* WhatsApp */
+  wa_list: () => `<div class="scr"><div style="background:#075E54;color:#fff">${sb('')}<div class="lt" style="color:#fff">WhatsApp</div></div><div class="lst">
+     <div class="row" id="waSteve"><div class="av" style="background:#128C7E">S</div><div><b>${H}</b><br><small>Hola mamá, ¿cómo estás?</small></div></div>
+     <div class="row"><div class="av">M</div><div><b>María</b><br><small>Buenos días</small></div></div>
+     <div class="row"><div class="av">T</div><div><b>Tía Rosa</b><br><small>Gracias</small></div></div></div></div>`,
+  wa_chat: () => waChat(),
+  wa_menu: () => waChat(`<div class="sheet"><div class="row">📄 Documentos</div><div class="row">📷 Cámara</div><div class="row" id="waFotos">🖼️ <b>Fotos</b></div><div class="row">📍 Ubicación</div></div>`),
+  wa_photos: () => `<div class="scr">${sb()}<div class="nav"><span>‹ Atrás</span><b style="color:#000">Fotos</b><span></span></div><div class="phg">
+     ${['🌸','🏖️','👶','🐶','🎂','🌅','🍎','🏠','⛪'].map((e,i)=>`<div class="ph" id="ph${i+1}" style="background:hsl(${i*40},70%,85%)">${e}</div>`).join('')}</div></div>`,
+  wa_preview: () => `<div class="scr dark">${sb('')}<div style="flex:1;display:flex;align-items:center;justify-content:center;font-size:150px">🏖️</div>
+     <div class="sendbtn" id="waSend"><div class="round">➤</div>Enviar</div></div>`,
+  wa_videocall: () => `<div class="scr dark">${sb('')}<div class="callname" style="margin-top:50px">${H}</div><div class="callsub">videollamada…</div>
+     <div style="text-align:center;font-size:110px;margin-top:30px">🙂</div>
+     <div class="bottomrow"><div><div class="round" id="hangup" style="background:#FF3B30">📵</div><div class="lab">Colgar</div></div></div></div>`,
+
+  /* Ajustes */
+  set_main: () => `<div class="scr" style="background:#F2F2F7">${sb('')}<div class="lt">Ajustes</div><div class="grp">
+     <div class="box">
+      <div class="row" id="rowWifi"><div class="ico" style="background:#007AFF">📶</div>Wi‑Fi<span class="sp"></span><small>Casa</small><span class="chev">›</span></div>
+      <div class="row"><div class="ico" style="background:#007AFF">🔷</div>Bluetooth<span class="sp"></span><small>Sí</small><span class="chev">›</span></div>
+      <div class="row"><div class="ico" style="background:#34C759">📡</div>Datos móviles<span class="chev" style="margin-left:auto">›</span></div></div>
+     <div class="box">
+      <div class="row"><div class="ico" style="background:#8e8e93">🔔</div>Notificaciones<span class="chev" style="margin-left:auto">›</span></div>
+      <div class="row" id="rowDisplay"><div class="ico" style="background:#007AFF">☀️</div>Pantalla y brillo<span class="chev" style="margin-left:auto">›</span></div>
+      <div class="row"><div class="ico" style="background:#007AFF">♿</div>Accesibilidad<span class="chev" style="margin-left:auto">›</span></div></div>
+    </div></div>`,
+  set_display: () => `<div class="scr" style="background:#F2F2F7">${settingsHead('Ajustes','Pantalla y brillo')}<div class="grp">
+     <div class="box"><div class="row">🌙 Apariencia<span class="chev" style="margin-left:auto">›</span></div></div>
+     <div class="box"><div class="row">🔆 Brillo<span class="chev" style="margin-left:auto">›</span></div>
+      <div class="row" id="rowTextSize">🔠 Tamaño del texto<span class="chev" style="margin-left:auto">›</span></div>
+      <div class="row">Texto en negrita<span class="sw" style="background:#ccc"></span></div></div></div></div>`,
+  set_textsize: () => `<div class="scr" style="background:#F2F2F7">${settingsHead('Pantalla y brillo','Tamaño del texto')}
+     <div class="sl"><div style="font-size:19px">Arrastra el control hacia la derecha para agrandar la letra.</div>
+      <div class="track"><div class="fill"></div><div class="knob"></div><span class="a1">A</span><span class="a2" id="sliderEnd">A</span></div></div></div>`,
+  set_wifi: () => `<div class="scr" style="background:#F2F2F7">${settingsHead('Ajustes','Wi‑Fi')}<div class="grp">
+     <div class="box"><div class="row">Wi‑Fi<span class="sw"></span></div></div>
+     <div style="margin:0 32px;color:#6c6c70;font-size:14px">REDES</div>
+     <div class="box"><div class="row" id="netCasa"><b>Casa</b><span class="sp"></span>🔒 📶</div><div class="row">Vecino<span class="sp"></span>🔒 📶</div></div></div></div>`,
+  set_wifipw: () => `<div class="scr" style="background:#F2F2F7">${settingsHead('Cancelar','Wi‑Fi')}
+     <div class="dlg"><div class="t">Introduce la contraseña de “Casa”</div>${fld('pwField','Contraseña',true)}
+      <div class="btns"><div>Cancelar</div><div class="go" id="btnJoin">Conectarse</div></div></div></div>`,
+
+  /* Formulario en Safari */
+  saf_form: () => `<div class="scr">${sb()}<div class="url">🔒 formulario-practica.com</div>
+     <div style="padding:0 18px"><div class="note2">Solo es práctica. Nada se envía.</div>
+      <div class="lbl">Nombre</div>${fld('fNombre','Escribe tu nombre')}
+      <div class="lbl">Teléfono</div>${fld('fTel','Tu número de teléfono')}
+      <div class="lbl">Dirección</div>${fld('fDir','Tu calle y ciudad')}
+      <div class="fbtn" id="fSend">Enviar</div></div></div>`,
+
+  /* FaceTime */
+  ft_main: () => `<div class="scr">${sb()}<div class="lt">FaceTime</div><div class="lst">
+     <div class="row" id="ftSteve"><div class="av" style="background:#0057D9">${H[0]}</div><div><b>${H}</b><br><small>toca para llamar</small></div><span class="sp"></span>📹</div>
+     <div class="row"><div class="av">M</div>María<span class="sp"></span>📹</div></div></div>`,
+  ft_call: () => `<div class="scr dark">${sb('')}<div style="text-align:center;font-size:100px;margin-top:70px">🙂</div><div class="callname" style="margin-top:10px">${H}</div><div class="callsub">FaceTime</div>
+     <div class="bottomrow" style="bottom:60px"><div><div class="round" id="ftShare" style="background:#3a3a3c">🖥️</div><div class="lab">Compartir</div></div>
+     <div><div class="round" style="background:#FF3B30">📵</div><div class="lab">Colgar</div></div></div></div>`,
+  ft_share: () => `<div class="scr dark">${sb('')}<div style="text-align:center;font-size:100px;margin-top:70px">🙂</div><div class="callname" style="margin-top:10px">${H}</div><div class="callsub">FaceTime</div>
+     <div class="pop"><div class="row" id="ftShareScreen">🖥️ <b>Compartir mi pantalla</b></div><div class="row">🎬 Ver juntos</div></div>
+     <div class="bottomrow" style="bottom:60px"><div><div class="round" style="background:#3a3a3c">🖥️</div><div class="lab">Compartir</div></div>
+     <div><div class="round" style="background:#FF3B30">📵</div><div class="lab">Colgar</div></div></div></div>`,
+
+  /* Estafas */
+  sms_scam: () => `<div class="scr" style="background:#fff">${sb()}<div class="nav"><span>‹ Mensajes</span><b style="color:#000">+1 555 013 2288</b><span></span></div>
+     <div style="padding:16px;flex:1;background:#fff"><div style="text-align:center;color:#8e8e93;font-size:13px;margin-bottom:12px">Hoy 9:41 · Número desconocido</div>
+      <div id="msg" style="background:#e9e9eb;border-radius:18px;padding:12px 14px;font-size:18px;max-width:92%">Su paquete está retenido, pague aquí: <span class="link" id="link">http://pagos-envio-urgente.example/pagar</span></div></div></div>`,
+  sms_warn: () => `<div class="scr" style="background:#fff">${sb()}<div class="nav"><span>‹ Mensajes</span><b style="color:#000">+1 555 013 2288</b><span></span></div>
+     <div style="padding:16px;flex:1;background:#fff"><div style="text-align:center;color:#8e8e93;font-size:13px;margin-bottom:12px">Hoy 9:41 · Número desconocido</div>
+      <div id="msg" style="background:#e9e9eb;border-radius:18px;padding:12px 14px;font-size:18px;max-width:92%">Su paquete está retenido, pague aquí: <span class="link" id="link">http://pagos-envio-urgente.example/pagar</span></div>
+      <div id="warn" class="warn">🚫 NO TOCAR</div></div></div>`,
+  sms_help: () => `<div class="scr" style="background:#fff">${sb()}<div class="lt" style="margin-top:50px;text-align:center;padding:0 24px">¿Tienes dudas?</div>
+     <div style="padding:0 24px"><div id="callHelp" style="background:#34C759;color:#fff;border-radius:20px;text-align:center;padding:30px 10px;font-size:26px;font-weight:800">📞 Llamar a ${H}</div></div></div>`,
+  sms_delete: () => `<div class="scr" style="background:#fff">${sb()}<div class="nav"><span>‹ Mensajes</span><b style="color:#000">+1 555 013 2288</b><span></span></div>
+     <div style="padding:16px;flex:1"><div style="background:#e9e9eb;border-radius:18px;padding:12px 14px;font-size:18px;max-width:92%">Su paquete está retenido, pague aquí: <span class="link">http://pagos-envio-urgente.example/pagar</span></div></div>
+     <div class="confirm"><div class="rd" id="del">Eliminar</div><div>Cancelar</div></div></div>`
+};
+
+/* ---------- Lecciones (fáciles de ampliar) ---------- */
+const LESSONS = [
+ {id:'llamar', emoji:'📞', title:'Hacer una llamada', steps:[
+  {screen:'home', target:'#appTel', say:'Toca la aplicación verde que dice Teléfono.'},
+  {screen:'tel_recents', target:'#tabCon', say:'Abajo, toca la pestaña que dice Contactos.'},
+  {screen:'tel_contacts', target:'#ctSteve', say:`Toca el nombre de ${H}.`},
+  {screen:'tel_card', target:'#btnCall', say:'Toca el botón que dice llamar.'},
+  {screen:'call_active', target:'#hangup', say:'Estás llamando. Cuando termines de hablar, toca el botón rojo que dice Colgar.'}]},
+ {id:'contestar', emoji:'📲', title:'Contestar una llamada', steps:[
+  {screen:'incoming', target:'#accept', say:`Te está llamando ${H}. Toca el botón verde que dice Aceptar.`},
+  {screen:'incoming_locked', target:'#handle', say:'Si el teléfono está bloqueado, verás una barra que dice desliza para contestar. Toca el círculo verde de la barra.'},
+  {screen:'call_active', target:'#hangup', say:'Ya estás hablando. Cuando termines, toca el botón rojo que dice Colgar.'}]},
+ {id:'foto', emoji:'💬', title:'Enviar una foto por WhatsApp', steps:[
+  {screen:'home', target:'#appWa', say:'Toca la aplicación verde que dice WhatsApp.'},
+  {screen:'wa_list', target:'#waSteve', say:`Toca el chat de ${H}.`},
+  {screen:'wa_chat', target:'#waPlus', say:'Toca el botón más, abajo a la izquierda.'},
+  {screen:'wa_menu', target:'#waFotos', say:'Toca Fotos.'},
+  {screen:'wa_photos', target:'#ph2', say:'Toca la foto que quieres enviar.'},
+  {screen:'wa_preview', target:'#waSend', say:'Toca la flecha verde para enviar la foto.'}],
+  done:`La foto ya llegó a ${H}.`},
+ {id:'video', emoji:'🎥', title:'Videollamada por WhatsApp', steps:[
+  {screen:'home', target:'#appWa', say:'Toca la aplicación verde que dice WhatsApp.'},
+  {screen:'wa_list', target:'#waSteve', say:`Toca el chat de ${H}.`},
+  {screen:'wa_chat', target:'#waVideo', say:'Arriba a la derecha, toca el dibujo de la cámara de video.'},
+  {screen:'wa_videocall', target:'#hangup', say:'Ya estás en videollamada. Para terminar, toca el botón rojo que dice Colgar.'}]},
+ {id:'letra', emoji:'🔠', title:'Agrandar la letra', steps:[
+  {screen:'home', target:'#appSet', say:'Toca Ajustes, la aplicación gris con engranaje.'},
+  {screen:'set_main', target:'#rowDisplay', say:'Toca Pantalla y brillo.'},
+  {screen:'set_display', target:'#rowTextSize', say:'Toca Tamaño del texto.'},
+  {screen:'set_textsize', target:'#sliderEnd', say:'Arrastra el control hacia la derecha. Para practicar, toca la letra grande del lado derecho.'}],
+  done:'Ahora la letra se ve más grande.'},
+ {id:'wifi', emoji:'📶', title:'Conectarse al Wi‑Fi', steps:[
+  {screen:'home', target:'#appSet', say:'Toca Ajustes, la aplicación gris con engranaje.'},
+  {screen:'set_main', target:'#rowWifi', say:'Toca Wi‑Fi.'},
+  {screen:'set_wifi', target:'#netCasa', say:'Toca la red que se llama Casa.'},
+  {screen:'set_wifipw', target:'#pwField', type:'input', placeholder:'Escribe una contraseña de práctica', say:'Toca el cuadro de Contraseña y escribe la contraseña. Luego toca el botón Listo.'},
+  {screen:'set_wifipw', target:'#btnJoin', say:'Toca Conectarse.'}]},
+ {id:'form', emoji:'📝', title:'Llenar un formulario', note:'Solo es práctica. Nada se envía.', steps:[
+  {screen:'saf_form', target:'#fNombre', type:'input', placeholder:'Escribe tu nombre', say:'Toca el cuadro de Nombre y escribe tu nombre. Luego toca Listo.'},
+  {screen:'saf_form', target:'#fTel', type:'input', placeholder:'Escribe tu teléfono', say:'Ahora toca el cuadro de Teléfono y escribe tu número. Luego toca Listo.'},
+  {screen:'saf_form', target:'#fDir', type:'input', placeholder:'Escribe tu calle y ciudad', say:'Ahora toca el cuadro de Dirección y escribe tu calle y ciudad. Luego toca Listo.'},
+  {screen:'saf_form', target:'#fSend', say:'Toca el botón azul que dice Enviar. Recuerda, esto es solo práctica.'}]},
+ {id:'ayuda', emoji:'🤝', title:`Pedir ayuda a ${H} (compartir pantalla)`, steps:[
+  {screen:'home', target:'#appFt', say:'Toca la aplicación verde que dice FaceTime.'},
+  {screen:'ft_main', target:'#ftSteve', say:`Toca el nombre de ${H} para llamarlo.`},
+  {screen:'ft_call', target:'#ftShare', say:'Durante la llamada, toca el botón que dice Compartir.'},
+  {screen:'ft_share', target:'#ftShareScreen', say:'Toca Compartir mi pantalla.'}],
+  done:`Ahora ${H} puede ver tu pantalla y señalarte dónde tocar.`},
+ {id:'estafas', emoji:'🚫', title:'Cuidado con estafas', steps:[
+  {screen:'sms_scam', target:'#msg', type:'next', say:'Mira este mensaje de un número desconocido. Dice que tu paquete está retenido y que pagues. Es una trampa. Toca Siguiente.'},
+  {screen:'sms_warn', target:'#warn', type:'next', say:'No toques enlaces de desconocidos. Toca Siguiente.'},
+  {screen:'sms_warn', target:'#link', type:'next', say:'Nunca des contraseñas ni números de tarjeta por mensaje o por teléfono. Toca Siguiente.'},
+  {screen:'sms_help', target:'#callHelp', type:'next', say:`Si tienes dudas, llama a ${H} antes de hacer cualquier cosa. Toca Siguiente.`},
+  {screen:'sms_delete', target:'#del', say:'Para borrar el mensaje, toca Eliminar.'}],
+  done:'Eliminaste el mensaje. Si dudas, llama a ' + H + '.'}
+];
+
+/* ---------- Estado, preferencias, voz ---------- */
+const store = {
+  get(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:JSON.parse(v);}catch(e){return d;} },
+  set(k,v){ try{ localStorage.setItem(k,JSON.stringify(v)); }catch(e){} }
+};
+let prefs = {voice:true, big:false};
+let doneIds = [];
+let cur = {lesson:null, i:0};
+let typed = {};
+let voiceObj = null;
+
+function pickVoice(){
+  try{
+    const vs = speechSynthesis.getVoices();
+    voiceObj = vs.find(v=>/^es[-_]US/i.test(v.lang)) || vs.find(v=>/^es[-_]MX/i.test(v.lang)) || vs.find(v=>/^es/i.test(v.lang)) || null;
+  }catch(e){voiceObj=null;}
+}
+function speak(text){
+  if(!prefs.voice) return;
+  try{
+    if(!('speechSynthesis' in window)) return;
+    speechSynthesis.cancel();
+    if(!voiceObj) pickVoice();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = voiceObj ? voiceObj.lang : 'es-MX';
+    if(voiceObj) u.voice = voiceObj;
+    u.rate = 0.85;
+    speechSynthesis.speak(u);
+  }catch(e){}
+}
+function applyPrefs(){ document.documentElement.dataset.big = prefs.big ? '1' : '0'; }
+
+/* ---------- Vistas ---------- */
+const app = (typeof document !== 'undefined' && document.getElementById) ? document.getElementById('app') : null;
+const $ = (s,r=document) => r.querySelector(s);
+function el(html){ const d=document.createElement('div'); d.innerHTML=html.trim(); return d.firstChild; }
+
+function showHome(){
+  cur = {lesson:null,i:0}; typed = {};
+  try{ speechSynthesis.cancel(); }catch(e){}
+  app.innerHTML = `<h1>¿Qué quieres aprender hoy?</h1>
+   <div id="list">${LESSONS.map(l=>`<button class="card" data-id="${l.id}"><span class="em">${l.emoji}</span><span class="t">${l.title}</span>${doneIds.includes(l.id)?'<span class="ck" aria-label="Completada">✅</span>':''}</button>`).join('')}</div>
+   <div class="settings"><button class="alt" id="setVoice">Voz: ${prefs.voice?'Encendida':'Apagada'}</button>
+   <button class="alt" id="setBig">Letra: ${prefs.big?'Más grande':'Grande'}</button></div>`;
+  app.querySelectorAll('.card').forEach(b=>b.onclick=()=>startLesson(b.dataset.id));
+  $('#setVoice').onclick=()=>{ prefs.voice=!prefs.voice; store.set('ayuda.voice',prefs.voice); if(prefs.voice) speak('Voz encendida'); else try{speechSynthesis.cancel();}catch(e){} showHome(); };
+  $('#setBig').onclick=()=>{ prefs.big=!prefs.big; store.set('ayuda.big',prefs.big); applyPrefs(); showHome(); };
+  window.scrollTo(0,0);
+}
+
+function startLesson(id){
+  cur = {lesson:LESSONS.find(l=>l.id===id), i:0}; typed = {};
+  buildLessonShell();
+  showStep(0);
+}
+
+function buildLessonShell(){
+  app.innerHTML = `<div class="top"><button class="alt" id="bHome">← Inicio</button><div class="step" id="stepTxt"></div></div>
+   <div class="instr" id="instr"></div>
+   <p class="hint" id="hint" aria-live="polite"></p>
+   <div class="stage" id="stage"><div class="phone" id="phone"></div><div class="ring" id="ring"></div></div>
+   <div class="bar"><button id="bRep">🔊 Repetir</button><button class="alt" id="bBack">Atrás</button></div>`;
+  $('#bHome').onclick=leaveLesson;
+  $('#bRep').onclick=()=>speak(currentSay());
+  $('#bBack').onclick=()=>{ if(cur.i>0) showStep(cur.i-1); else leaveLesson(); };
+  $('#stage').addEventListener('click', onStageTap);
+}
+function leaveLesson(){ typed = {}; showHome(); }
+function currentStep(){ return cur.lesson.steps[cur.i]; }
+function currentSay(){ return currentStep().say; }
+
+function showStep(i){
+  const L = cur.lesson;
+  if(i >= L.steps.length) return celebrate();
+  cur.i = i;
+  const st = L.steps[i];
+  $('#stepTxt').textContent = `Paso ${i+1} de ${L.steps.length}`;
+  const typing = st.type==='input', nxt = st.type==='next';
+  $('#instr').innerHTML = `<p class="say"></p>${(L.note && i===0)||(L.note && st.target==='#fSend')?`<p class="note">${L.note}</p>`:''}
+    ${typing?`<input id="realInput" type="${/pw/.test(st.target)?'password':'text'}" placeholder="${st.placeholder||''}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" aria-label="${st.placeholder||'Escribe aquí'}"><button class="go green" id="bDone" disabled>Listo</button>`:''}
+    ${nxt?`<button class="go" id="bNext">Siguiente</button>`:''}`;
+  $('#instr .say').textContent = st.say;
+  $('#hint').textContent = '';
+  $('#phone').innerHTML = SCREENS[st.screen]();
+  // restaurar lo escrito (solo en memoria)
+  Object.keys(typed).forEach(k=>mirror(k, typed[k]));
+  if(typing){
+    const inp = $('#realInput'), done = $('#bDone');
+    inp.value = typed[st.target] || '';
+    done.disabled = !inp.value.trim();
+    inp.addEventListener('input', ()=>{ typed[st.target]=inp.value; mirror(st.target, inp.value); done.disabled=!inp.value.trim(); });
+    done.onclick=()=>{ if(inp.value.trim()) { inp.blur(); showStep(cur.i+1); } };
+    inp.addEventListener('keydown', e=>{ if(e.key==='Enter' && inp.value.trim()){ inp.blur(); showStep(cur.i+1);} });
+  }
+  if(nxt) $('#bNext').onclick=()=>showStep(cur.i+1);
+  layout(true);
+  speak(st.say);
+}
+
+function mirror(sel, value){
+  const f = $(sel, $('#phone')); if(!f) return;
+  const v = $('.val', f), p = $('.ph2', f); if(!v) return;
+  v.textContent = f.dataset.mask ? '•'.repeat(value.length) : value;
+  if(p) p.style.display = value ? 'none' : '';
+}
+
+/* ---------- Escala del teléfono y anillo ---------- */
+function layout(scroll){
+  const stage = $('#stage'), phone = $('#phone'), ring = $('#ring');
+  if(!stage || !cur.lesson) return;
+  const w = Math.min(app.clientWidth - 32, 440);
+  const inner = w - 12;
+  const s = inner / 390;
+  stage.style.width = w + 'px';
+  stage.style.height = (800*s + 12) + 'px';
+  stage.style.borderRadius = (44*s) + 'px';
+  phone.style.transform = `scale(${s})`;
+  const st = currentStep();
+  const t = $(st.target, phone);
+  if(!t){ ring.style.display='none'; return; }
+  const sr = phone.getBoundingClientRect(), tr = t.getBoundingClientRect();
+  let x = tr.left - sr.left, y = tr.top - sr.top, W = tr.width, Hh = tr.height;
+  const pad = 6, min = 48;
+  if(W < min){ x -= (min-W)/2; W = min; }
+  if(Hh < min){ y -= (min-Hh)/2; Hh = min; }
+  ring.style.left = (x - pad) + 'px';
+  ring.style.top = (y - pad) + 'px';
+  ring.style.width = (W + pad*2) + 'px';
+  ring.style.height = (Hh + pad*2) + 'px';
+  ring.style.display = 'block';
+  if(scroll){
+    const reduce = window.matchMedia && matchMedia('(prefers-reduced-motion:reduce)').matches;
+    const r = ring.getBoundingClientRect();
+    if(r.top < 140 || r.bottom > window.innerHeight - 20){
+      window.scrollBy({top: r.top - window.innerHeight*0.45, behavior: reduce?'auto':'smooth'});
+    }
+  }
+}
+
+/* ---------- Toques ---------- */
+function onStageTap(e){
+  const st = currentStep(), ring = $('#ring');
+  const r = ring.getBoundingClientRect();
+  const inRing = e.clientX>=r.left-8 && e.clientX<=r.right+8 && e.clientY>=r.top-8 && e.clientY<=r.bottom+8;
+  const t = $(st.target, $('#phone'));
+  if(inRing || (t && t.contains(e.target))){
+    if(st.type==='input'){ const inp=$('#realInput'); if(inp) inp.focus(); return; }
+    showStep(cur.i+1);
+  } else {
+    const msg = 'Casi. Toca donde está el círculo amarillo.';
+    $('#hint').textContent = msg;
+    speak(msg);
+  }
+}
+
+function celebrate(){
+  const L = cur.lesson;
+  if(!doneIds.includes(L.id)){ doneIds.push(L.id); store.set('ayuda.done',doneIds); }
+  typed = {};
+  app.innerHTML = `<div class="celebrate"><div style="font-size:4rem">🎉</div><div class="big">¡Muy bien! Lo lograste 🎉</div>
+   <p>${L.done||''}</p>
+   <button id="bAgain">Practicar otra vez</button><button class="alt" id="bHome2">Volver al inicio</button></div>`;
+  $('#bAgain').onclick=()=>startLesson(L.id);
+  $('#bHome2').onclick=showHome;
+  window.scrollTo(0,0);
+  speak('¡Muy bien! Lo lograste. ' + (L.done||''));
+}
+
+/* ---------- Inicio ---------- */
+function init(){
+  prefs.voice = store.get('ayuda.voice', true);
+  prefs.big = store.get('ayuda.big', false);
+  doneIds = store.get('ayuda.done', []);
+  if(!Array.isArray(doneIds)) doneIds = [];
+  applyPrefs();
+  try{ speechSynthesis.onvoiceschanged = pickVoice; pickVoice(); }catch(e){}
+  window.addEventListener('resize', ()=>layout(false));
+  window.addEventListener('orientationchange', ()=>setTimeout(()=>layout(false),200));
+  showHome();
+  if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  }
+}
+if(typeof window !== 'undefined' && typeof document !== 'undefined' && document.getElementById) init();
+</script>
+</body>
+</html>
